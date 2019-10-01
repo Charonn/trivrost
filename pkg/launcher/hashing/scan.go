@@ -9,8 +9,8 @@ import (
 	"os"
 	"path/filepath"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/setlog/trivrost/pkg/launcher/config"
+	log "github.com/sirupsen/logrus"
 )
 
 func fopen(filePath string) (io.ReadCloser, error) {
@@ -61,10 +61,10 @@ func mustHashRelatively(readDir readDirFunc, readFile readFileFunc, stat statFun
 func mustHashDir(readDir readDirFunc, readFile readFileFunc, stat statFunc, hashFilePath string) config.FileInfoMap {
 	fm := make(config.FileInfoMap)
 	for _, info := range mustReadDir(readDir, hashFilePath) {
-		if info.IsDir() {
-			fm.Join(mustHashDir(readDir, readFile, stat, filepath.Join(hashFilePath, info.Name())))
+		filePath := filepath.Join(hashFilePath, info.Name())
+		if isDir(filePath) {
+			fm.Join(mustHashDir(readDir, readFile, stat, filePath))
 		} else {
-			filePath := filepath.Join(hashFilePath, info.Name())
 			sha, size, err := calculateSha256(filePath, readFile)
 			if err != nil {
 				panic(fmt.Sprintf("failed hashing file \"%s\": %v", hashFilePath, err))
@@ -75,8 +75,24 @@ func mustHashDir(readDir readDirFunc, readFile readFileFunc, stat statFunc, hash
 	return fm
 }
 
+func evaluateSoftLink(filePath string) string {
+	evaluatedName, err := filepath.EvalSymlinks(filePath)
+	if err != nil {
+		panic(err)
+	}
+	return evaluatedName
+}
+
+func isDir(filePath string) bool {
+	fi, err := os.Stat(filePath)
+	if err != nil {
+		panic(err)
+	}
+	return fi.IsDir()
+}
+
 func mustReadDir(readDir readDirFunc, directoryPath string) []os.FileInfo {
-	infos, err := readDir(directoryPath)
+	infos, err := readDir(evaluateSoftLink(directoryPath))
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil
