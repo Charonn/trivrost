@@ -16,11 +16,14 @@ trivrost uses the following user- and platform-specific folders to store files. 
 
 ## Windows
 ### Default
+
 Deployment artifact:
 `%APPDATA%\<VendorName>\<ProductName>\`
 
 `bundles`-folder, lock-files and `timestamps.json`:
-`%LOCALAPPDATA%\<VendorName>\<ProductName>\`
+`%LOCALAPPDATA%\<VendorName>\<ProductName>\`<br>
+If trivrost is started with the [`--roaming` parameter](cmdline.md#trivrost), the path changes to:
+`%APPDATA%\<VendorName>\<ProductName>\`
 
 Desktop shortcut:
 `%USERPROFILE%\Desktop\`
@@ -30,7 +33,9 @@ Start menu shortcuts:
 `%APPDATA%\Microsoft\Windows\Start Menu\<VendorName>\Uninstall\`
 
 Log-files:
-`%LOCALAPPDATA%\Temp\<VendorName>\<ProductName>\log\`
+`%LOCALAPPDATA%\Temp\<VendorName>\<ProductName>\log\`<br>
+If trivrost is started with the [`--roaming` parameter](cmdline.md#trivrost), the path changes to:
+`%APPDATA%\Temp\<VendorName>\<ProductName>\log\`
 
 ### System mode
 As **Default**, but with the following changes/additions.
