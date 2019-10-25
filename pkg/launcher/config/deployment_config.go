@@ -29,9 +29,10 @@ type LauncherUpdateConfig struct {
 
 type BundleConfig struct {
 	HashDataConfig
-	LocalDirectory  string   `json:"LocalDirectory"`
-	TargetPlatforms []string `json:"TargetPlatforms,omitempty"`
-	Tags            []string `json:"Tags,omitempty"`
+	LocalDirectory   string   `json:"LocalDirectory"`
+	TargetPlatforms  []string `json:"TargetPlatforms,omitempty"`
+	Tags             []string `json:"Tags,omitempty"`
+	AllowOfflineMode bool     `json:"AllowOfflineMode,omitempty"`
 }
 
 type ExecutionConfig struct {

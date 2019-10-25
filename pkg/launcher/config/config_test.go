@@ -27,12 +27,14 @@ const deploymentConfigContent string = `{
         {
             "BundleInfoURL": "https://example.com/windows/testapp/bundleinfo.json",
             "BaseURL": "https://example.com/windows/testapp",
-            "LocalDirectory": "app"
+			"LocalDirectory": "app",
+			"AllowOfflineMode": false
         },
         {
             "BundleInfoURL": "https://example.com/windows/java/bundleinfo.json",
             "BaseURL": "https://example.com/windows/java",
-            "LocalDirectory": "java",
+			"LocalDirectory": "java",
+			"AllowOfflineMode": true,
             "TargetPlatforms": [ "windows" ]
         }
     ],
@@ -111,6 +113,43 @@ const deploymentConfigWithoutEnvSectionContent string = `{
     }
 }`
 
+const deploymentConfigWithoutEnforceUpdate string = `{
+    "Timestamp": "2019-02-07 14:53:17",
+    "LauncherUpdate": [
+        {
+            "BundleInfoURL": "https://example.com/windows/launcher/bundleinfo.json",
+            "BaseURL": "https://example.com/windows/launcher",
+            "TargetPlatforms": [ "windows" ]
+        }
+    ],
+    "Bundles": [
+        {
+            "BundleInfoURL": "https://example.com/windows/testapp/bundleinfo.json",
+            "BaseURL": "https://example.com/windows/testapp",
+			"LocalDirectory": "app",
+        },
+        {
+            "BundleInfoURL": "https://example.com/windows/java/bundleinfo.json",
+            "BaseURL": "https://example.com/windows/java",
+			"LocalDirectory": "java",
+            "TargetPlatforms": [ "windows" ]
+        }
+    ],
+    "Execution": {
+        "Commands": [
+            {
+                "Name": "java/bin/java",
+                "Arguments": [ "-jar", "foo", "-Xm1024M" ],
+                "Env": {
+                    "NEW_ENV": "New env variable.",
+                    "OMIT_ENV": null
+                },
+                "TargetPlatforms": [ "windows", "linux" ]
+            }
+        ]
+    }
+}`
+
 func TestReadLauncherConfig(t *testing.T) {
 	reader := strings.NewReader(launcherConfigContent)
 	cfg := config.ReadLauncherConfigFromReader(reader)
@@ -181,9 +220,25 @@ func TestReadDeploymentConfig(t *testing.T) {
 		{len(cfg.Bundles[1].TargetPlatforms), "Bundles[1].TargetPlatforms", 1},
 		{len(cfg.Execution.Commands[0].TargetPlatforms), "Execution.Commands[0].TargetPlatforms", 2},
 	}
+
 	for _, test := range testsLengths {
 		if test.value != test.expected {
 			t.Errorf("config.ReadConfig() test failed for %s. Actual length: %d; Expected length: %d.", test.valueName, test.value, test.expected)
+		}
+	}
+
+	testsBools := []struct {
+		value     bool
+		valueName string
+		expected  bool
+	}{
+		{cfg.Bundles[0].AllowOfflineMode, "Bundles[0].AllowOfflineMode", false},
+		{cfg.Bundles[1].AllowOfflineMode, "Bundles[0].AllowOfflineMode", true},
+	}
+
+	for _, test := range testsBools {
+		if test.value != test.expected {
+			t.Errorf("config.ReadConfig() test failed for %s. Actual bool: %t; Expected bool: %t.", test.valueName, test.value, test.expected)
 		}
 	}
 }
@@ -283,6 +338,25 @@ func TestReadDeploymentConfigWithoutEnvSection(t *testing.T) {
 	for _, test := range testsLengths {
 		if test.value != test.expected {
 			t.Errorf("config.ReadConfig() test failed for %s. Actual length: %d; Expected length: %d.", test.valueName, test.value, test.expected)
+		}
+	}
+}
+func TestReadDeploymentConfigWithoutAllowOfflineMode(t *testing.T) {
+	reader := strings.NewReader(deploymentConfigWithoutEnvSectionContent)
+	cfg := config.ParseDeploymentConfig(reader, "windows", "amd64")
+
+	testsBools := []struct {
+		value     bool
+		valueName string
+		expected  bool
+	}{
+		{cfg.Bundles[0].AllowOfflineMode, "Bundles[0].AllowOfflineMode", false},
+		{cfg.Bundles[1].AllowOfflineMode, "Bundles[0].AllowOfflineMode", false},
+	}
+
+	for _, test := range testsBools {
+		if test.value != test.expected {
+			t.Errorf("config.ReadConfig() test failed for %s. Actual bool: %t; Expected bool: %t.", test.valueName, test.value, test.expected)
 		}
 	}
 }
