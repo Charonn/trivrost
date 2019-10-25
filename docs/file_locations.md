@@ -16,67 +16,67 @@ trivrost uses the following user- and platform-specific folders to store files. 
 
 ## Windows
 ### Default
-Deployment artifact:  
+Deployment artifact:
 `%APPDATA%\<VendorName>\<ProductName>\`
 
-`bundles`-folder, lock-files and `timestamps.json`:  
+`bundles`-folder, lock-files and `timestamps.json`:
 `%LOCALAPPDATA%\<VendorName>\<ProductName>\`
 
-Desktop shortcut:  
+Desktop shortcut:
 `%USERPROFILE%\Desktop\`
 
-Start menu shortcuts:  
-`%APPDATA%\Microsoft\Windows\Start Menu\<VendorName>\`  
+Start menu shortcuts:
+`%APPDATA%\Microsoft\Windows\Start Menu\<VendorName>\`
 `%APPDATA%\Microsoft\Windows\Start Menu\<VendorName>\Uninstall\`
 
-Log-files:  
+Log-files:
 `%LOCALAPPDATA%\Temp\<VendorName>\<ProductName>\log\`
 
 ### System mode
 As **Default**, but with the following changes/additions.
 
-Deployment artifact and `systembundles`-folder:  
+Deployment artifact and `systembundles`-folder:
 `%ProgramFiles%\<VendorName>\<ProductName>\`
 
-Desktop shortcut:  
+Desktop shortcut:
 `%PUBLIC%\Desktop\`
 
-Start menu shortcuts:  
-`%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\<VendorName>\`  
+Start menu shortcuts:
+`%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\<VendorName>\`
 (Uninstall shortcut not installed by system mode-`.msi`)
 
 ## MacOS
-Deployment artifact, `bundles`-folder, lock-files and `timestamps.json`:  
+Deployment artifact, `bundles`-folder, lock-files and `timestamps.json`:
 `$HOME/Library/Application Support/<VendorName>/<ProductName>/`
 
-Desktop shortcut:  
+Desktop shortcut:
 `$HOME/Desktop/`
 
 Start menu shortcuts: N/A
 
-Log-files:  
+Log-files:
 `$HOME/Library/Caches/<VendorName>/<ProductName>/log/`
 
 ## Linux
 ### Default
-Deployment artifact, `bundles`-folder, icon, lock-files and `timestamps.json`:  
+Deployment artifact, `bundles`-folder, icon, lock-files and `timestamps.json`:
 `$HOME/.local/share/<VendorName>/<ProductName>/`
 
-Desktop shortcut:  
+Desktop shortcut:
 `$HOME/Desktop/`
 
-Start menu shortcuts:  
+Start menu shortcuts:
 `$HOME/.local/share/applications/<VendorName>/<ProductName>/`
 `$HOME/.local/share/applications/<VendorName>/<ProductName>/Uninstall/`
 
-Log-files:  
+Log-files:
 `$HOME/.cache/<VendorName>/<ProductName>/log/`
 
 ### XDG
 If set/possible, the following [XDG](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)-related configurations will supercede the above:
 
-Desktop shortcut:  
+Desktop shortcut:
 `$(xdg-user-dir DESKTOP)/`
 
-Log-files:  
+Log-files:
 `$XDG_CACHE_HOME/<VendorName>/<ProductName>/log`
